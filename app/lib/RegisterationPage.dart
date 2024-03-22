@@ -4,26 +4,26 @@ class RegistrationPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Registration'),
+        title: const Text('Registration'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            TextField(
+            const TextField(
               decoration: InputDecoration(labelText: 'Username'),
             ),
-            SizedBox(height: 20),
-            TextField(
+            const SizedBox(height: 20),
+            const TextField(
               decoration: InputDecoration(labelText: 'Email'),
             ),
-            SizedBox(height: 20),
-            TextField(
+            const SizedBox(height: 20),
+            const TextField(
               decoration: InputDecoration(labelText: 'Password'),
               obscureText: true,
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
                 // Add registration logic here
