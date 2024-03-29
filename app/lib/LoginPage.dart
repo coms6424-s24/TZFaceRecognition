@@ -1,99 +1,99 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:flutter/services.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
+  @override
+  _LoginPageState createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  final MethodChannel _teeChannel = MethodChannel('tee_channel');
+
+  @override
+  void initState() {
+    super.initState();
+    _takePicture(context);
+  }
+
   Future<void> _takePicture(BuildContext context) async {
     final imagePicker = ImagePicker();
-    final XFile? image = await imagePicker.pickImage(source: ImageSource.camera);
+    final XFile? image =
+        await imagePicker.pickImage(source: ImageSource.camera);
     if (image != null) {
-      // Image captured, you can handle it accordingly
-      print('Image Path: ${image.path}');
+      // Image captured, send it to TEE
+      final imageData = await image.readAsBytes();
+      print(imageData);
+      _sendImageDataToTEE(imageData);
     } else {
       // No image selected
       print('No image selected.');
     }
   }
 
+  Future<void> _sendImageDataToTEE(Uint8List imageData) async {
+    try {
+      await _teeChannel.invokeMethod('processImageData', {'data': imageData});
+    } on PlatformException catch (e) {
+      print("Failed to send data to TEE: '${e.message}'.");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: _takePicture(context),
-      builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Scaffold(
-            appBar: AppBar(
-              title: Text('Login'),
-              backgroundColor: Colors.transparent, // Make app bar transparent
-              elevation: 0, // Remove app bar shadow
-            ),
-            backgroundColor: Colors.black, // Set the background color to black
-            body: Center(
-              child: CircularProgressIndicator(),
-            ),
-          );
-        } else {
-          return Scaffold(
-            appBar: AppBar(
-              title: Text('Login'),
-              backgroundColor: Colors.transparent, // Make app bar transparent
-              elevation: 0, // Remove app bar shadow
-            ),
-            backgroundColor: Colors.black, // Set the background color to black
-            body: Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  const TextField(
-                    decoration: InputDecoration(
-                      labelText: 'Email',
-                      labelStyle: TextStyle(color: Colors.white), // Set label text color
-                      enabledBorder: OutlineInputBorder( // Set outline border color
-                        borderRadius: BorderRadius.all(Radius.circular(10)), // Adjust the border radius
-                        borderSide: BorderSide(color: Colors.greenAccent, width: 2),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 20),
-                  const TextField(
-                    decoration: InputDecoration(
-                      labelText: 'Password',
-                      labelStyle: TextStyle(color: Colors.white), // Set label text color
-                      enabledBorder: OutlineInputBorder( // Set outline border color
-                        borderRadius: BorderRadius.all(Radius.circular(10)), // Adjust the border radius
-                        borderSide: BorderSide(color: Colors.greenAccent, width: 2),
-                      ),
-                    ),
-                    obscureText: true,
-                  ),
-                  SizedBox(height: 20),
-                  Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Colors.greenAccent, // Neon green color
-                        width: 2, // Border width
-                      ),
-                      borderRadius: BorderRadius.circular(8), // Border radius
-                    ),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        _takePicture(context); // Call function to take a picture
-                      },
-                      style: ElevatedButton.styleFrom(
-                        primary: Colors.black, // Set button background color to black
-                      ),
-                      child: Text(
-                        'Login',
-                        style: TextStyle(color: Colors.white), // Set button text color
-                      ),
-                    ),
-                  ),
-                ],
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Login'),
+        backgroundColor: Colors.transparent, // Make app bar transparent
+        elevation: 0, // Remove app bar shadow
+      ),
+      backgroundColor: Colors.black, // Set the background color to black
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            // Your email and password text fields
+            const TextField(
+              decoration: InputDecoration(
+                labelText: 'Email',
+                // Remaining code for email text field...
               ),
             ),
-          );
-        }
-      },
+            SizedBox(height: 20),
+            const TextField(
+              decoration: InputDecoration(
+                labelText: 'Password',
+                // Remaining code for password text field...
+              ),
+              obscureText: true,
+            ),
+            SizedBox(height: 20),
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: Colors.greenAccent, // Neon green color
+                  width: 2, // Border width
+                ),
+                borderRadius: BorderRadius.circular(8), // Border radius
+              ),
+              child: ElevatedButton(
+                onPressed: () {
+                  _takePicture(context); // Call function to take a picture
+                },
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.black, // Set button background color to black
+                ),
+                child: Text(
+                  'Login',
+                  style:
+                      TextStyle(color: Colors.white), // Set button text color
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
