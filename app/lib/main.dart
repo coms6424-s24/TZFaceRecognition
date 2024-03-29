@@ -18,63 +18,103 @@ class MyApp extends StatelessWidget {
         primaryColor: Colors.transparent,
         appBarTheme: const AppBarTheme(
           // Set appBar's background color to transparent
-          backgroundColor: Color.fromARGB(255, 62, 184, 66),
+          backgroundColor: Color.fromARGB(255, 156, 20, 20),
         ),
       ),
-      home: const MyHomePage(title: 'Secure Face Recognition using TZ'),
+      home: const MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatelessWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
-
-  final String title;
+  const MyHomePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+    double fontSize = screenWidth * 0.05; // Adjust this multiplier as needed
+
     return Scaffold(
-      appBar: AppBar(
-        title: Text(title),
-      ),
+      backgroundColor: Colors.black, // Set the background color to black
+
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-                        ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => LoginPage()),
-                );
-              },
-              // Style for Login button
-              style: ElevatedButton.styleFrom(
-                primary: Color.fromARGB(255, 46, 134, 49), // Set background color
-                padding: EdgeInsets.symmetric(vertical: 16, horizontal: 32), // Increase padding
+            Text(
+              'Shiri',
+              style: TextStyle(
+                fontSize: fontSize,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'RetroHackerFont', // Use the correct font family name
+                color: Color.fromARGB(255, 7, 234, 15),
               ),
-              child: const Text('  Login  '),
             ),
             SizedBox(
-              height: MediaQuery.of(context).size.height * 0.05, // 10% of the screen height
+              height: screenHeight * 0.05, // Add some space between text and buttons
             ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => RegistrationPage()),
-                );
-              },
-              // Style for Register button
-              style: ElevatedButton.styleFrom(
-                primary: Color.fromARGB(255, 46, 134, 49), // Set background color
-                padding: EdgeInsets.symmetric(vertical: 16, horizontal: 32), // Increase padding
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: Color.fromARGB(255, 7, 234, 15), // Neon green color
+                  width: 4, // Border width
+                ),
+                borderRadius: BorderRadius.circular(8), // Border radius
               ),
-              child: const Text('Register'),
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => LoginPage()),
+                  );
+                },
+                // Style for Login button
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.black, // Set button background color to black
+                  padding: EdgeInsets.symmetric(
+                      vertical: 16, horizontal: 32), // Increase padding
+                ),
+                child: Text(
+                  '  Login  ',
+                  style: TextStyle(
+                    fontFamily: 'RetroHackerFont', // Use the custom font for the button text
+                  ),
+                ),
+              ),
             ),
-            
-
-
+            SizedBox(
+              height: screenHeight * 0.05, // Add some space between buttons
+            ),
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: Color.fromARGB(255, 7, 234, 15), // Neon green color
+                  width: 4, // Border width
+                ),
+                borderRadius: BorderRadius.circular(8), // Border radius
+              ),
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => RegistrationPage()),
+                  );
+                },
+                // Style for Register button
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.black, // Set button background color to black
+                  padding: EdgeInsets.symmetric(
+                      vertical: 16, horizontal: 32), // Increase padding
+                ),
+                child: Text(
+                  'Register',
+                  style: TextStyle(
+                    fontFamily: 'RetroHackerFont', // Use the custom font for the button text
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
       ),

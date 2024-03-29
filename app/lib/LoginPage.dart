@@ -16,45 +16,77 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Use FutureBuilder to execute _takePicture when LoginPage is built for the first time
     return FutureBuilder(
       future: _takePicture(context),
       builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
-        // Display a loading indicator while the picture is being taken
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Scaffold(
             appBar: AppBar(
               title: Text('Login'),
+              backgroundColor: Colors.transparent, // Make app bar transparent
+              elevation: 0, // Remove app bar shadow
             ),
+            backgroundColor: Colors.black, // Set the background color to black
             body: Center(
               child: CircularProgressIndicator(),
             ),
           );
         } else {
-          // Once picture is taken, show the login UI
           return Scaffold(
             appBar: AppBar(
               title: Text('Login'),
+              backgroundColor: Colors.transparent, // Make app bar transparent
+              elevation: 0, // Remove app bar shadow
             ),
+            backgroundColor: Colors.black, // Set the background color to black
             body: Padding(
               padding: const EdgeInsets.all(20.0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   const TextField(
-                    decoration: InputDecoration(labelText: 'Email'),
+                    decoration: InputDecoration(
+                      labelText: 'Email',
+                      labelStyle: TextStyle(color: Colors.white), // Set label text color
+                      enabledBorder: OutlineInputBorder( // Set outline border color
+                        borderRadius: BorderRadius.all(Radius.circular(10)), // Adjust the border radius
+                        borderSide: BorderSide(color: Colors.greenAccent, width: 2),
+                      ),
+                    ),
                   ),
                   SizedBox(height: 20),
                   const TextField(
-                    decoration: InputDecoration(labelText: 'Password'),
+                    decoration: InputDecoration(
+                      labelText: 'Password',
+                      labelStyle: TextStyle(color: Colors.white), // Set label text color
+                      enabledBorder: OutlineInputBorder( // Set outline border color
+                        borderRadius: BorderRadius.all(Radius.circular(10)), // Adjust the border radius
+                        borderSide: BorderSide(color: Colors.greenAccent, width: 2),
+                      ),
+                    ),
                     obscureText: true,
                   ),
-                  const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: () {
-                      _takePicture(context); // Call function to take a picture
-                    },
-                    child: Text('Login'),
+                  SizedBox(height: 20),
+                  Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.greenAccent, // Neon green color
+                        width: 2, // Border width
+                      ),
+                      borderRadius: BorderRadius.circular(8), // Border radius
+                    ),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        _takePicture(context); // Call function to take a picture
+                      },
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.black, // Set button background color to black
+                      ),
+                      child: Text(
+                        'Login',
+                        style: TextStyle(color: Colors.white), // Set button text color
+                      ),
+                    ),
                   ),
                 ],
               ),
