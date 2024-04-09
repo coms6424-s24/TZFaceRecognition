@@ -17,6 +17,8 @@ class MainActivity : FlutterActivity() {
                         // Handle image data here
                         // Send it to the TEE or perform any other processing
                         println("Success!!!!!!!!!!!!!!!!!!!!!")
+                        println("Image Data: ")
+                        println(imageData)
 
                         result.success(null) // Indicate success back to Flutter
                     } else {
