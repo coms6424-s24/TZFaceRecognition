@@ -24,7 +24,7 @@ class MainActivity : FlutterActivity() {
                         val imageData = call.argument<ByteArray>("data")
                         if (imageData != null) {
                             // Handle image data here
-                            println("Working")
+                            println("Workig")
                             sendDataToTEE(imageData)
                             result.success(null) // Indicate success back to Flutter
                         } else {
