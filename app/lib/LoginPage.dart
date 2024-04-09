@@ -82,7 +82,7 @@ class _LoginPageState extends State<LoginPage> {
                   _takePicture(context); // Call function to take a picture
                 },
                 style: ElevatedButton.styleFrom(
-                  primary: Colors.black, // Set button background color to black
+                  backgroundColor: Colors.black, // Set button background color to black
                 ),
                 child: Text(
                   'Login',

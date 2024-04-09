@@ -62,7 +62,7 @@ class RegistrationPage extends StatelessWidget {
                   // Add registration logic here
                 },
                 style: ElevatedButton.styleFrom(
-                  primary: Colors.black, // Set button background color to black
+                  backgroundColor: Colors.black, // Set button background color to black
                 ),
                 child: Text(
                   'Register',

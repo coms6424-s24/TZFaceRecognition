@@ -18,7 +18,7 @@ class MainActivity : FlutterActivity() {
                         // Send it to the TEE or perform any other processing
                         println("Success!!!!!!!!!!!!!!!!!!!!!")
                         println("Image Data: ${imageData.contentToString()}") 
-                        
+                        sendImageToTEE(imageData)
                         result.success(null) // Indicate success back to Flutter
                     } else {
                         println("NO Success!!!!!!!!!!!!!!!!!!!!!")
@@ -29,5 +29,13 @@ class MainActivity : FlutterActivity() {
                     result.notImplemented()
                 }
             }
+    }
+
+
+
+        private fun sendImageToTEE(imageData: ByteArray) {
+
+        // val optee = OPTEEClient()
+        // optee.sendData(imageData)
     }
 }

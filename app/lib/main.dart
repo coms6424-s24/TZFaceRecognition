@@ -71,7 +71,7 @@ class MyHomePage extends StatelessWidget {
                 },
                 // Style for Login button
                 style: ElevatedButton.styleFrom(
-                  primary: Colors.black, // Set button background color to black
+                  backgroundColor: Colors.black, // Set button background color to black
                   padding: EdgeInsets.symmetric(
                       vertical: 16, horizontal: 32), // Increase padding
                 ),
@@ -103,7 +103,7 @@ class MyHomePage extends StatelessWidget {
                 },
                 // Style for Register button
                 style: ElevatedButton.styleFrom(
-                  primary: Colors.black, // Set button background color to black
+                  backgroundColor: Colors.black, // Set button background color to black
                   padding: EdgeInsets.symmetric(
                       vertical: 16, horizontal: 32), // Increase padding
                 ),
