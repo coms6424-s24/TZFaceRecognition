@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2017, Linaro Limited
+ * Copyright (c) 2017, Linaro Limited
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,43 +24,38 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
+#ifndef __SECURE_STORAGE_H__
+#define __SECURE_STORAGE_H__
+
+/* UUID of the trusted application */
+#define TA_READ_FILE_UUID \
+		{ 0xf4e750bb, 0x1437, 0x4fbf, \
+			{ 0x87, 0x85, 0x8d, 0x35, 0x80, 0xc3, 0x49, 0x94 } }
+/*
+ * TA_SECURE_STORAGE_CMD_READ_RAW - Create and fill a secure storage file
+ * param[0] (memref) ID used the identify the persistent object
+ * param[1] (memref) Raw data dumped from the persistent object
+ * param[2] unused
+ * param[3] unused
+ */
+#define TA_SECURE_STORAGE_CMD_READ_RAW		0
 
 /*
- * The name of this file must not be modified
+ * TA_SECURE_STORAGE_CMD_WRITE_RAW - Create and fill a secure storage file
+ * param[0] (memref) ID used the identify the persistent object
+ * param[1] (memref) Raw data to be writen in the persistent object
+ * param[2] unused
+ * param[3] unused
  */
-
-#ifndef USER_TA_HEADER_DEFINES_H
-#define USER_TA_HEADER_DEFINES_H
-
-/* To get the TA UUID definition */
-#include <hello_world_ta.h>
-
-#define TA_UUID				TA_HELLO_WORLD_UUID
+#define TA_SECURE_STORAGE_CMD_WRITE_RAW		1
 
 /*
- * TA properties: multi-instance TA, no specific attribute
- * TA_FLAG_EXEC_DDR is meaningless but mandated.
+ * TA_SECURE_STORAGE_CMD_DELETE - Delete a persistent object
+ * param[0] (memref) ID used the identify the persistent object
+ * param[1] unused
+ * param[2] unused
+ * param[3] unused
  */
-#define TA_FLAGS			TA_FLAG_EXEC_DDR
+#define TA_SECURE_STORAGE_CMD_DELETE		2
 
-/* Provisioned stack size */
-#define TA_STACK_SIZE			(2 * 1024)
-
-/* Provisioned heap size for TEE_Malloc() and friends */
-#define TA_DATA_SIZE			(32 * 1024)
-
-/* The gpd.ta.version property */
-#define TA_VERSION	"1.0"
-
-/* The gpd.ta.description property */
-#define TA_DESCRIPTION	"Example of OP-TEE Hello World Trusted Application"
-
-/* Extra properties */
-#define TA_CURRENT_TA_EXT_PROPERTIES \
-    { "org.linaro.optee.examples.hello_world.property1", \
-	USER_TA_PROP_TYPE_STRING, \
-        "Some string" }, \
-    { "org.linaro.optee.examples.hello_world.property2", \
-	USER_TA_PROP_TYPE_U32, &(const uint32_t){ 0x0010 } }
-
-#endif /* USER_TA_HEADER_DEFINES_H */
+#endif /* __SECURE_STORAGE_H__ */
