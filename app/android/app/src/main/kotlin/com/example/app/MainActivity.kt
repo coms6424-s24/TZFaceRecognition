@@ -14,15 +14,15 @@ class MainActivity : FlutterActivity() {
                 if (call.method == "processImageData") {
                     val imageData = call.argument<ByteArray>("data")
                     if (imageData != null) {
-                        // Handle image data here
-                        // Send it to the TEE or perform any other processing
-                        println("Success!!!!!!!!!!!!!!!!!!!!!")
-                        //println("Image Data: ${imageData.contentToString()}") 
-                        sendImageToTEE(imageData)
+                        println("imageData is not null")
+                        println("imageData.size: ${imageData.size}")
+
+                        // Call sendImageToTEE function here
+                        sendImageToTEE(imageData, imageData.size)
+
                         result.success(null) // Indicate success back to Flutter
                     } else {
-                        println("NO Success!!!!!!!!!!!!!!!!!!!!!")
-
+                        println("imageData is null")
                         result.error("INVALID_DATA", "Image data is null", null)
                     }
                 } else {
@@ -31,15 +31,22 @@ class MainActivity : FlutterActivity() {
             }
     }
 
+    private fun sendImageToTEE(imageData: ByteArray, size: Int) {
+        println("we are now in sendImageToTEE function")
+        println("Size: $size")
+        
+    }
+}
 
 
-    private fun sendImageToTEE(imageData: ByteArray) {
-        //get this to work today
+    //private fun sendImageToTEE(imageData: ByteArray, size: Int) {
+         //print("we are now in sendImagetoTEEE function  ")
+        //print(size)
         // try {
-        //     println("Are you Working?")
         //     // Initialize the GlobalPlatform API
         //     val omapi = OMApec.getOMApecInstance()
     
+        //     // Open a session with the secure element
         //     val session = omapi.openSession()
     
         //     // Select the Trusted Application (TA) within the TEE
@@ -50,8 +57,17 @@ class MainActivity : FlutterActivity() {
         //         throw Exception("Failed to select TA")
         //     }
     
+        //     // Prepare the data to send
+        //     val dataToSend = ByteArray(size + 4)
+        //     // First 4 bytes represent the size of the data
+        //     dataToSend[0] = (size shr 24).toByte()
+        //     dataToSend[1] = (size shr 16).toByte()
+        //     dataToSend[2] = (size shr 8).toByte()
+        //     dataToSend[3] = size.toByte()
+        //     // Copy image data into the rest of the array
+        //     System.arraycopy(imageData, 0, dataToSend, 4, size)
+    
         //     // Send image data to the TA
-        //     val dataToSend = imageData // Use the image data received from Flutter
         //     val dataCommand = CommandAPDU(CommandAPDU.DATA, 0x00, 0x00, 0x00, dataToSend)
         //     val responseData = session.transmit(dataCommand)
     
@@ -64,6 +80,6 @@ class MainActivity : FlutterActivity() {
         // } catch (e: Exception) {
         //     e.printStackTrace()
         // }
-    }
+    //}
     
-}
+    
