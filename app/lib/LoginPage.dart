@@ -33,6 +33,7 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> _sendImageDataToTEE(Uint8List imageData) async {
     try {
+      print("this is being valled from the send Image Data ");
       await _teeChannel.invokeMethod('processImageData', {'data': imageData});
     } on PlatformException catch (e) {
       print("Failed to send data to TEE: '${e.message}'.");
@@ -60,7 +61,7 @@ class _LoginPageState extends State<LoginPage> {
                 // Remaining code for email text field...
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             const TextField(
               decoration: InputDecoration(
                 labelText: 'Password',
@@ -82,7 +83,8 @@ class _LoginPageState extends State<LoginPage> {
                   _takePicture(context); // Call function to take a picture
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.black, // Set button background color to black
+                  backgroundColor:
+                      Colors.black, // Set button background color to black
                 ),
                 child: Text(
                   'Login',
