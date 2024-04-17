@@ -60,7 +60,7 @@ class MainActivity : FlutterActivity() {
     // Call your TEE function here
     
     // After processing in TEE, write the image data to secure storage
-    writeToSecureStorage(context, imageData)
+    writeToSecureStorage(this, imageData)
         
     }
 }
