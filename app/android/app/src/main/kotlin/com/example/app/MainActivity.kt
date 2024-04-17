@@ -38,6 +38,7 @@ class MainActivity : FlutterActivity() {
 
     private fun writeToSecureStorage(context: Context, data: ByteArray) {
         // Initialize SharedPreferences for secure storage
+        //change this to init the OPTEE context using some API- global platform or something and then send 
         val sharedPreferences: SharedPreferences = context.getSharedPreferences("secure_storage", Context.MODE_PRIVATE)
         
         // Convert the byte array to a Base64-encoded string for storage
