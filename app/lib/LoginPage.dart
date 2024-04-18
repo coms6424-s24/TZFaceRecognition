@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:google_ml_vision/google_ml_vision.dart';
 import 'package:image_picker/image_picker.dart';
@@ -27,6 +29,37 @@ class _LoginPageState extends State<LoginPage> {
       print(imageData);
       final GoogleVisionImage visionImage =
           GoogleVisionImage.fromFilePath(image.path);
+
+      // Detect faces in the image
+      final FaceDetector faceDetector = GoogleVision.instance.faceDetector();
+      final List<Face> faces = await faceDetector.processImage(visionImage);
+
+      if (faces.isNotEmpty) {
+        // Assuming only one face is detected, extract features for the first face
+        for (Face face in faces) {
+          final Rect boundingBox = face.boundingBox!;
+
+          final double? rotY = face.headEulerAngleY; // Make it nullable
+          final double? rotZ = face.headEulerAngleZ; // Make it nullable
+
+          // If landmark detection was enabled with FaceDetectorOptions (mouth, ears,
+          // eyes, cheeks, and nose available):
+          final FaceLandmark? leftEar = face.getLandmark(FaceLandmarkType.leftEar); // Make it nullable
+          if (leftEar != null) {
+            final Point<double> leftEarPos = Point(leftEar.position.dx, leftEar.position.dy); // Convert Offset to Point<double>
+          }
+
+          // If classification was enabled with FaceDetectorOptions:
+          final double? smileProb = face.smilingProbability; // Make it nullable
+
+          // If face tracking was enabled with FaceDetectorOptions:
+          final int? id = face.trackingId; // Make it nullable
+        }
+        // Process the landmarks or any other features you're interested in
+      } else {
+        // No face detected
+        print('No face detected.');
+      }
 
       _sendImageDataToTEE(imageData);
     } else {
