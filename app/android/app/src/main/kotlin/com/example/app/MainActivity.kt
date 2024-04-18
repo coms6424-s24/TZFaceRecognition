@@ -11,7 +11,9 @@ class MainActivity : FlutterActivity() {
     // Add the following line to load the JNI library
     companion object {
         init {
-            System.loadLibrary("tee_jni") // Load the JNI library
+            //System.loadLibrary("tee_jni") // Load the JNI library
+            //uncomment this to use the tee_jni 
+            //this is prob not setup the correct way
         }
     }
 
