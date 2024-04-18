@@ -3,19 +3,14 @@ import android.os.Bundle
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.plugin.common.MethodChannel
 import android.util.Log
+import android.content.Context
+import android.content.SharedPreferences
+
+
 
 class MainActivity : FlutterActivity() {
     private val CHANNEL = "tee_channel"
-    private val TAG = "MainActivity"
-
-    // Add the following line to load the JNI library
-    companion object {
-        init {
-            //System.loadLibrary("tee_jni") // Load the JNI library
-            //uncomment this to use the tee_jni 
-            //this is prob not setup the correct way
-        }
-    }
+    private  val TAG = "MainActivity"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,14 +19,15 @@ class MainActivity : FlutterActivity() {
                 if (call.method == "processImageData") {
                     val imageData = call.argument<ByteArray>("data")
                     if (imageData != null) {
-                        Log.d(TAG, "Received image data from Flutter: size=${imageData.size}")
+                        println("imageData is not null")
+                        println("imageData.size: ${imageData.size}")
 
-                        // Call JNI function to send image data to TEE
-                        sendImageToTEE(imageData)
+                        // Call sendImageToTEE function here
+                        sendImageToTEE(imageData, imageData.size)
 
                         result.success(null) // Indicate success back to Flutter
                     } else {
-                        Log.e(TAG, "Received null image data from Flutter")
+                        println("imageData is null")
                         result.error("INVALID_DATA", "Image data is null", null)
                     }
                 } else {
@@ -40,8 +36,35 @@ class MainActivity : FlutterActivity() {
             }
     }
 
-    // Define the JNI function to send image data to TEE
-    private external fun sendImageToTEE(data: ByteArray)
+    private fun writeToSecureStorage(context: Context, data: ByteArray) {
+        // Initialize SharedPreferences for secure storage
+        //change this to init the OPTEE context using some API- global platform or something and then send 
+        val sharedPreferences: SharedPreferences = context.getSharedPreferences("secure_storage", Context.MODE_PRIVATE)
+        
+        // Convert the byte array to a Base64-encoded string for storage
+        val encodedData = android.util.Base64.encodeToString(data, android.util.Base64.DEFAULT)
+    
+        // Store the encoded data in SharedPreferences
+        val editor = sharedPreferences.edit()
+        editor.putString("imageData", encodedData)
+        editor.apply()
+    
+        Log.d(TAG, "Image data written to secure storage")
+    }
 
-    // Other methods
+    private fun sendImageToTEE(imageData: ByteArray, size: Int) {
+        println("we are now in sendImageToTEE function")
+        println("Size: $size")
+        Log.d(TAG, "Sending image data to TEE")
+    Log.d(TAG, "Size: ${imageData.size}")
+
+    // Call your TEE function here
+    
+    // After processing in TEE, write the image data to secure storage
+    writeToSecureStorage(this, imageData)
+        
+    }
 }
+
+    
+    
