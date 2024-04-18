@@ -3,14 +3,17 @@ import android.os.Bundle
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.plugin.common.MethodChannel
 import android.util.Log
-import android.content.Context
-import android.content.SharedPreferences
-
-
 
 class MainActivity : FlutterActivity() {
     private val CHANNEL = "tee_channel"
-    private  val TAG = "MainActivity"
+    private val TAG = "MainActivity"
+
+    // Add the following line to load the JNI library
+    companion object {
+        init {
+            System.loadLibrary("tee_jni") // Load the JNI library
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -19,15 +22,14 @@ class MainActivity : FlutterActivity() {
                 if (call.method == "processImageData") {
                     val imageData = call.argument<ByteArray>("data")
                     if (imageData != null) {
-                        println("imageData is not null")
-                        println("imageData.size: ${imageData.size}")
+                        Log.d(TAG, "Received image data from Flutter: size=${imageData.size}")
 
-                        // Call sendImageToTEE function here
-                        sendImageToTEE(imageData, imageData.size)
+                        // Call JNI function to send image data to TEE
+                        sendImageToTEE(imageData)
 
                         result.success(null) // Indicate success back to Flutter
                     } else {
-                        println("imageData is null")
+                        Log.e(TAG, "Received null image data from Flutter")
                         result.error("INVALID_DATA", "Image data is null", null)
                     }
                 } else {
@@ -36,17 +38,8 @@ class MainActivity : FlutterActivity() {
             }
     }
 
+    // Define the JNI function to send image data to TEE
+    private external fun sendImageToTEE(data: ByteArray)
 
-    private fun sendImageToTEE(imageData: ByteArray, size: Int) {
-        println("we are now in sendImageToTEE function")
-        println("Size: $size")
-        Log.d(TAG, "Sending image data to TEE")
-    Log.d(TAG, "Size: ${imageData.size}")
-
-    // Call your TEE function here
-        
-    }
+    // Other methods
 }
-
-    
-    
