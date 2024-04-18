@@ -36,21 +36,6 @@ class MainActivity : FlutterActivity() {
             }
     }
 
-    private fun writeToSecureStorage(context: Context, data: ByteArray) {
-        // Initialize SharedPreferences for secure storage
-        //change this to init the OPTEE context using some API- global platform or something and then send 
-        val sharedPreferences: SharedPreferences = context.getSharedPreferences("secure_storage", Context.MODE_PRIVATE)
-        
-        // Convert the byte array to a Base64-encoded string for storage
-        val encodedData = android.util.Base64.encodeToString(data, android.util.Base64.DEFAULT)
-    
-        // Store the encoded data in SharedPreferences
-        val editor = sharedPreferences.edit()
-        editor.putString("imageData", encodedData)
-        editor.apply()
-    
-        Log.d(TAG, "Image data written to secure storage")
-    }
 
     private fun sendImageToTEE(imageData: ByteArray, size: Int) {
         println("we are now in sendImageToTEE function")
@@ -59,9 +44,6 @@ class MainActivity : FlutterActivity() {
     Log.d(TAG, "Size: ${imageData.size}")
 
     // Call your TEE function here
-    
-    // After processing in TEE, write the image data to secure storage
-    writeToSecureStorage(this, imageData)
         
     }
 }
