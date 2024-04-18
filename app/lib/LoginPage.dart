@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:google_ml_vision/google_ml_vision.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/services.dart';
-import 'package:opencv_4/opencv_4.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -25,6 +25,9 @@ class _LoginPageState extends State<LoginPage> {
       // Image captured, send it to TEE
       final imageData = await image.readAsBytes();
       print(imageData);
+      final GoogleVisionImage visionImage =
+          GoogleVisionImage.fromFilePath(image.path);
+
       _sendImageDataToTEE(imageData);
     } else {
       // No image selected
@@ -34,7 +37,7 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> _sendImageDataToTEE(Uint8List imageData) async {
     try {
-      print("this is being valled from the send Image Data ");
+      print("this is being called from the send Image Data ");
       await _teeChannel.invokeMethod('processImageData', {'data': imageData});
     } on PlatformException catch (e) {
       print("Failed to send data to TEE: '${e.message}'.");
