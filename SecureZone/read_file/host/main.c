@@ -1,3 +1,29 @@
+/*
+ * Copyright (c) 2017, Linaro Limited
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ * this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 
 #include <err.h>
 #include <stdio.h>
@@ -8,6 +34,9 @@
 
 /* TA API: UUID and command IDs */
 #include <secure_storage_ta.h>
+
+#define LOGIN_FLAG true
+#define AUTH_OK false
 
 /* TEE resources */
 struct test_ctx {
@@ -138,78 +167,164 @@ TEEC_Result delete_secure_object(struct test_ctx *ctx, char *id)
 	return res;
 }
 
+TEEC_Result mock_authentication(struct test_ctx *ctx, char *id)
+{
+    if (LOGIN_FLAG == true) {
+        // Simulate facial features hash retrieval from secure storage
+        // For testing purposes, let's assume the hash is present
+        return AUTH_OK;
+    } else {
+        // Simulate adding facial features hash to secure storage
+        // For testing purposes, let's assume the hash is added successfully
+        return TEEC_SUCCESS;
+    }
+}
+
+// implementation with data
+
+// TEEC_Result authentication(struct test_ctx *ctx, char *id)
+// {
+//     if (LOGIN_FLAG == true) {
+//         // Check if the hash is present in the secure storage
+//         char stored_hash[MAX_HASH_LENGTH]; // Assuming MAX_HASH_LENGTH is defined
+//         TEEC_Result res = read_secure_object(ctx, id, stored_hash, sizeof(stored_hash));
+//         if (res == TEEC_SUCCESS) {
+//             // Facial features hash found, authentication successful
+//             return AUTH_OK;
+//         } else {
+//             // Facial features hash not found, authentication failed
+//             return TEEC_ERROR_ITEM_NOT_FOUND;
+//         }
+//     } else {
+//         // Add the hash to the secure storage
+//         char calculated_hash[MAX_HASH_LENGTH]; // Calculate facial features hash
+//         // Assuming calculated_hash is populated with the calculated hash
+//         TEEC_Result res = write_secure_object(ctx, id, calculated_hash, sizeof(calculated_hash));
+//         return res;
+//     }
+// }
+
 #define TEST_OBJECT_SIZE	7000
+#define MAX_HASH_LENGTH	7000
+
+char mock_hash[MAX_HASH_LENGTH] = "mock_hash_data";
+// int main(void)
+// {
+// 	struct test_ctx ctx;
+// 	char obj1_id[] = "object#1";		/* string identification for the object */
+// 	char obj2_id[] = "object#2";		/* string identification for the object */
+// 	char obj1_data[TEST_OBJECT_SIZE];
+// 	char read_data[TEST_OBJECT_SIZE];
+// 	TEEC_Result res;
+
+// 	printf("Prepare session with the TA\n");
+// 	prepare_tee_session(&ctx);
+
+// 	/*
+// 	 * Create object, read it, delete it.
+// 	 */
+// 	printf("\nTest on object \"%s\"\n", obj1_id);
+
+// 	printf("- Create and load object in the TA secure storage\n");
+
+// 	memset(obj1_data, 0xA1, sizeof(obj1_data));
+
+// 	res = write_secure_object(&ctx, obj1_id,
+// 				  obj1_data, sizeof(obj1_data));
+// 	if (res != TEEC_SUCCESS)
+// 		errx(1, "Failed to create an object in the secure storage");
+
+// 	printf("- Read back the object\n");
+
+// 	res = read_secure_object(&ctx, obj1_id,
+// 				 read_data, sizeof(read_data));
+// 	if (res != TEEC_SUCCESS)
+// 		errx(1, "Failed to read an object from the secure storage");
+// 	if (memcmp(obj1_data, read_data, sizeof(obj1_data)))
+// 		errx(1, "Unexpected content found in secure storage");
+
+// 	printf("- Delete the object\n");
+
+// 	res = delete_secure_object(&ctx, obj1_id);
+// 	if (res != TEEC_SUCCESS)
+// 		errx(1, "Failed to delete the object: 0x%x", res);
+
+// 	/*
+// 	 * Non volatile storage: create object2 if not found, delete it if found
+// 	 */
+// 	printf("\nTest on object \"%s\"\n", obj2_id);
+
+// 	res = read_secure_object(&ctx, obj2_id,
+// 				  read_data, sizeof(read_data));
+// 	if (res != TEEC_SUCCESS && res != TEEC_ERROR_ITEM_NOT_FOUND)
+// 		errx(1, "Unexpected status when reading an object : 0x%x", res);
+
+// 	if (res == TEEC_ERROR_ITEM_NOT_FOUND) {
+// 		char data[] = "This is data stored in the secure storage.\n";
+
+// 		printf("- Object not found in TA secure storage, create it.\n");
+
+// 		res = write_secure_object(&ctx, obj2_id,
+// 					  data, sizeof(data));
+// 		if (res != TEEC_SUCCESS)
+// 			errx(1, "Failed to create/load an object");
+
+// 	} else if (res == TEEC_SUCCESS) {
+// 		printf("- Object found in TA secure storage, delete it.\n");
+
+// 		res = delete_secure_object(&ctx, obj2_id);
+// 		if (res != TEEC_SUCCESS)
+// 			errx(1, "Failed to delete an object");
+// 	}
+
+// 	printf("\nWe're done, close and release TEE resources\n");
+// 	terminate_tee_session(&ctx);
+// 	return 0;
+// }
+
+
+// main with the app connected
+
+// int main(void)
+// {
+//     struct test_ctx ctx;
+//     char user_id[] = "user#1"; // ID for identifying the user in secure storage
+//     TEEC_Result res;
+
+//     printf("Prepare session with the TA\n");
+//     prepare_tee_session(&ctx);
+
+//     // Perform authentication
+//     res = authentication(&ctx, user_id);
+//     if (res == AUTH_OK) {
+//         printf("Authentication successful!\n");
+//     } else {
+//         printf("Authentication failed!\n");
+//     }
+
+//     printf("\nWe're done, close and release TEE resources\n");
+//     terminate_tee_session(&ctx);
+//     return 0;
+// }
 
 int main(void)
 {
-	struct test_ctx ctx;
-	char obj1_id[] = "object#1";		/* string identification for the object */
-	char obj2_id[] = "object#2";		/* string identification for the object */
-	char obj1_data[TEST_OBJECT_SIZE];
-	char read_data[TEST_OBJECT_SIZE];
-	TEEC_Result res;
+    struct test_ctx ctx;
+    char user_id[] = "user#1"; // ID for identifying the user in secure storage
+    TEEC_Result res;
 
-	printf("Prepare session with the TA\n");
-	prepare_tee_session(&ctx);
+    printf("Prepare session with the TA\n");
+    prepare_tee_session(&ctx);
 
-	/*
-	 * Create object, read it, delete it.
-	 */
-	printf("\nTest on object \"%s\"\n", obj1_id);
+    // Perform mock authentication
+    res = mock_authentication(&ctx, user_id);
+    if (res == AUTH_OK) {
+        printf("Authentication successful!\n");
+    } else {
+        printf("Authentication failed!\n");
+    }
 
-	printf("- Create and load object in the TA secure storage\n");
-
-	memset(obj1_data, 0xA1, sizeof(obj1_data));
-
-	res = write_secure_object(&ctx, obj1_id,
-				  obj1_data, sizeof(obj1_data));
-	if (res != TEEC_SUCCESS)
-		errx(1, "Failed to create an object in the secure storage");
-
-	printf("- Read back the object\n");
-
-	res = read_secure_object(&ctx, obj1_id,
-				 read_data, sizeof(read_data));
-	if (res != TEEC_SUCCESS)
-		errx(1, "Failed to read an object from the secure storage");
-	if (memcmp(obj1_data, read_data, sizeof(obj1_data)))
-		errx(1, "Unexpected content found in secure storage");
-
-	printf("- Delete the object\n");
-
-	res = delete_secure_object(&ctx, obj1_id);
-	if (res != TEEC_SUCCESS)
-		errx(1, "Failed to delete the object: 0x%x", res);
-
-	/*
-	 * Non volatile storage: create object2 if not found, delete it if found
-	 */
-	printf("\nTest on object \"%s\"\n", obj2_id);
-
-	res = read_secure_object(&ctx, obj2_id,
-				  read_data, sizeof(read_data));
-	if (res != TEEC_SUCCESS && res != TEEC_ERROR_ITEM_NOT_FOUND)
-		errx(1, "Unexpected status when reading an object : 0x%x", res);
-
-	if (res == TEEC_ERROR_ITEM_NOT_FOUND) {
-		char data[] = "This is data stored in the secure storage.\n";
-
-		printf("- Object not found in TA secure storage, create it.\n");
-
-		res = write_secure_object(&ctx, obj2_id,
-					  data, sizeof(data));
-		if (res != TEEC_SUCCESS)
-			errx(1, "Failed to create/load an object");
-
-	} else if (res == TEEC_SUCCESS) {
-		printf("- Object found in TA secure storage, delete it.\n");
-
-		res = delete_secure_object(&ctx, obj2_id);
-		if (res != TEEC_SUCCESS)
-			errx(1, "Failed to delete an object");
-	}
-
-	printf("\nWe're done, close and release TEE resources\n");
-	terminate_tee_session(&ctx);
-	return 0;
+    printf("\nWe're done, close and release TEE resources\n");
+    terminate_tee_session(&ctx);
+    return 0;
 }
