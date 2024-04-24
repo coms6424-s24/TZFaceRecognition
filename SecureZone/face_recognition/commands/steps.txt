@@ -1,0 +1,6 @@
+Create a build directory: mkdir build
+Enter the build directory: cd build
+Generate Makefile using CMake: cmake ..
+Compile Your Project with Make:
+After generating the Makefile, run make to compile your project.
+./face_recognition.
