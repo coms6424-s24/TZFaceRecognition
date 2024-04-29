@@ -13,8 +13,8 @@ bool areFacialFeaturesMatching(const Mat& detectedFace1, const Mat& detectedFace
     // For demonstration purposes, let's assume all faces are considered a match
 
 // Display the concatenated image
-imshow("Detected Faces", detectedFace2);
-waitKey(0);
+    imshow("Detected Faces", detectedFace2);
+    waitKey(0);
     return true;
 }
 
