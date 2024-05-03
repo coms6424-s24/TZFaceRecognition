@@ -61,9 +61,9 @@ class MainActivity : FlutterActivity() {
     }
 
     private fun signIn(imageData: ByteArray): Boolean {
-        // Implement your sign-in logic here
-        // For example, check if the user is registered by comparing the image data with stored data
+        //  sign-in logic here
+        // check if the user is registered by comparing the image data with stored data
         // Return true if the user is registered, false otherwise
-        return true // Dummy implementation, replace with actual logic
+        return false // Dummy implementation or return true
     }
 }
