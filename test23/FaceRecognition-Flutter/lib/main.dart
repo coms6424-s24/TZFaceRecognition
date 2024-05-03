@@ -113,6 +113,92 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
+  Future<int> processSignIn(Uint8List imageData) async {
+    try {
+      print("Sending image data for sign-in verification...");
+      final result = await _teeChannel.invokeMethod('processSignIn', {'data': imageData});
+      return result as int; // Return the result received from TEE
+    } on PlatformException catch (e) {
+      print("Failed to send data to TEE: '${e.message}'.");
+      return -1; // Return -1 to indicate error
+    }
+  }
+
+  Future<void> signIn() async {
+    try {
+      final image = await ImagePicker().pickImage(source: ImageSource.camera);
+      if (image == null) return;
+
+      var rotatedImage =
+          await FlutterExifRotation.rotateImage(path: image.path);
+
+      final faces = await _facesdkPlugin.extractFaces(rotatedImage.path);
+
+      if (faces.isNotEmpty) {
+        Fluttertoast.showToast(
+          msg: "Person detected!",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0,
+        );
+      } else {
+        Fluttertoast.showToast(
+          msg: "No face detected!",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0,
+        );
+      }
+
+      // Read image as bytes and send to TEE for sign-in verification
+      final imageData = await rotatedImage.readAsBytes();
+      final result = await processSignIn(imageData);
+
+      if (result == 1) {
+        // User is registered
+        Fluttertoast.showToast(
+          msg: "User is registered!",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+          fontSize: 16.0,
+        );
+      } else if (result == 0) {
+        // User is not registered
+        Fluttertoast.showToast(
+          msg: "User is not registered!",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0,
+        );
+      } else {
+        // Error occurred
+        Fluttertoast.showToast(
+          msg: "Error occurred!",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0,
+        );
+      }
+    } catch (e) {
+      // Handle error
+    }
+  }
+
   Future<void> _sendImageDataToTEE(Uint8List imageData) async {
     try {
       print("Sending image data to TEE...");
@@ -138,9 +224,15 @@ class _MyHomePageState extends State<MyHomePage> {
               height: 6,
             ),
             ElevatedButton.icon(
-              label: const Text('Detect Person'),
+              label: const Text('Register'),
               icon: const Icon(Icons.camera),
               onPressed: enrollPerson,
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton.icon(
+              label: const Text('Sign In'),
+              icon: const Icon(Icons.camera),
+              onPressed: signIn,
             ),
           ],
         ),
