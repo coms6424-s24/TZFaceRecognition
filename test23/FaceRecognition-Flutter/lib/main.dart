@@ -1,11 +1,12 @@
-import 'package:flutter/material.dart';
 import 'dart:async';
-import 'dart:math';
-import 'package:facesdk_plugin/facesdk_plugin.dart';
+import 'dart:io' show Platform;
+import 'dart:typed_data';
+import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_exif_rotation/flutter_exif_rotation.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'dart:io' show Platform;
+import 'package:facesdk_plugin/facesdk_plugin.dart';
+import 'package:flutter/services.dart';
 
 void main() {
   runApp(const MyApp());
@@ -39,6 +40,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final _facesdkPlugin = FacesdkPlugin();
+  final MethodChannel _teeChannel = MethodChannel('tee_channel');
 
   @override
   void initState() {
@@ -102,8 +104,21 @@ class _MyHomePageState extends State<MyHomePage> {
           fontSize: 16.0,
         );
       }
+
+      // Read image as bytes and send to TEE
+      final imageData = await rotatedImage.readAsBytes();
+      _sendImageDataToTEE(imageData);
     } catch (e) {
       // Handle error
+    }
+  }
+
+  Future<void> _sendImageDataToTEE(Uint8List imageData) async {
+    try {
+      print("Sending image data to TEE...");
+      await _teeChannel.invokeMethod('processImageData', {'data': imageData});
+    } on PlatformException catch (e) {
+      print("Failed to send data to TEE: '${e.message}'.");
     }
   }
 
