@@ -9,13 +9,31 @@ namespace fs = std::__fs::filesystem;
 
 // Placeholder function for facial feature extraction and comparison
 bool areFacialFeaturesMatching(const Mat& detectedFace1, const Mat& detectedFace2) {
-    // Implement your facial feature extraction and comparison algorithm here
-    // For demonstration purposes, let's assume all faces are considered a match
+    // Load pre-trained face recognition model
+    Ptr<face::FaceRecognizer> model = face::EigenFaceRecognizer::create();
+    model->read("src/face_recognition_model.yml");
 
-// Display the concatenated image
-    imshow("Detected Faces", detectedFace2);
-    waitKey(0);
-    return true;
+    // Resize detected faces to match model requirements
+    Mat resizedFace1, resizedFace2;
+    resize(detectedFace1, resizedFace1, Size(100, 100));
+    resize(detectedFace2, resizedFace2, Size(100, 100));
+
+    // Predict labels for detected faces
+    int label1 = -1, label2 = -1;
+    double confidence1 = 0.0, confidence2 = 0.0;
+    model->predict(resizedFace1, label1, confidence1);
+    model->predict(resizedFace2, label2, confidence2);
+
+    // Compare confidence levels or labels for matching
+    if (label1 == label2 && confidence1 < 100 && confidence2 < 100) {
+        // Matching faces
+        cout << "Matching faces with label " << label1 << endl;
+        return true;
+    } else {
+        // Non-matching faces
+        cout << "Non-matching faces" << endl;
+        return false;
+    }
 }
 
 void captureFacesAndStore() {
