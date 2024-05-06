@@ -10,6 +10,7 @@ import android.content.SharedPreferences
 
 class MainActivity : FlutterActivity() {
     private val CHANNEL = "tee_channel"
+    private val SIGN_IN_CHANNEL = "sign_channel" // New channel for sign-in
     private val TAG = "MainActivity"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,12 +29,20 @@ class MainActivity : FlutterActivity() {
                             result.error("INVALID_DATA", "Image data is null", null)
                         }
                     }
-                    "processSignIn" -> {
+                    else -> result.notImplemented()
+                }
+            }
+        
+        // Handle method calls for sign-in
+        MethodChannel(flutterEngine!!.dartExecutor.binaryMessenger, SIGN_IN_CHANNEL)
+            .setMethodCallHandler { call, result ->
+                when (call.method) {
+                    "signIn" -> {
                         val imageData = call.argument<ByteArray>("data")
                         if (imageData != null) {
                             Log.d(TAG, "Sign-in image data received. Size: ${imageData.size}")
                             val isUserRegistered = signIn(imageData)
-                            result.success(if (isUserRegistered) 1 else 0)
+                            result.success(isUserRegistered) // Return the result to Flutter
                         } else {
                             Log.e(TAG, "Sign-in image data is null")
                             result.error("INVALID_DATA", "Sign-in image data is null", null)
@@ -61,9 +70,23 @@ class MainActivity : FlutterActivity() {
     }
 
     private fun signIn(imageData: ByteArray): Boolean {
-        //  sign-in logic here
-        // check if the user is registered by comparing the image data with stored data
-        // Return true if the user is registered, false otherwise
-        return false // Dummy implementation or return true
+        // Retrieve the stored image data from secure storage
+        val sharedPreferences = getSharedPreferences("secure_storage", Context.MODE_PRIVATE)
+        val storedImageDataString = sharedPreferences.getString("imageData", null)
+        
+        if (storedImageDataString != null) {
+            // Decode the stored image data from Base64 string to byte array
+            val storedImageData = android.util.Base64.decode(storedImageDataString, android.util.Base64.DEFAULT)
+            
+            // Compare the provided image data with the stored image data
+            if (imageData.contentEquals(storedImageData)) {
+                // If the provided image data matches the stored image data, return true
+                return true
+            }
+        }
+        
+        // If the provided image data does not match the stored image data or if no stored data is available, return false
+        return false
     }
+    
 }

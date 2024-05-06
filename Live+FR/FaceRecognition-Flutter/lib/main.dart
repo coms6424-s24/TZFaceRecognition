@@ -212,7 +212,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Demo for liveness - Ritwik and Shivam '),
+        title: const Text('Demo-Ritwik and Shivam '),
         toolbarHeight: 70,
         centerTitle: true,
       ),
