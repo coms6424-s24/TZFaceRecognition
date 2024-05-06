@@ -22,6 +22,9 @@ The project aims to create a Mobile Application which communicates with the ARM 
 
 ## 📺 Preview
 
+![Alt text](./readmeasset/image.png)
+![Alt text](./readmeasset/image2.png)
+
 ### 💻 System requirement :
 
 1. Linux System (with GCC Compiler)
