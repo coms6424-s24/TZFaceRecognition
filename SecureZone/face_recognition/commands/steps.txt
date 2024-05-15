@@ -4,3 +4,9 @@ Generate Makefile using CMake: cmake ..
 Compile Your Project with Make:
 After generating the Makefile, run make to compile your project.
 ./face_recognition.
+
+
+Use a fflutter plugin to make it run 
+
+
+flutter create --template=plugin flutter_optee
