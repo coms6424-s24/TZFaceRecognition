@@ -1,0 +1,15 @@
+#ifndef FACE_RECOGNITION_TA_H
+#define FACE_RECOGNITION_TA_H
+
+#define TA_FACE_RECOGNITION_UUID \
+    { 0x12345678, 0x1234, 0x1234, \
+      { 0x12, 0x34, 0x56, 0x78, 0x90, 0xab, 0xcd, 0xef } }
+
+#define CMD_STORE_FACE 0
+#define CMD_RECOGNIZE_FACE 1
+#define CMD_DELETE_FACE 2
+
+#define MAX_FACES 10
+#define MAX_FACE_SIZE 1024
+
+#endif /* FACE_RECOGNITION_TA_H */
