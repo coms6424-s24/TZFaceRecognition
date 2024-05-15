@@ -1,10 +1,20 @@
 #include <stdio.h>
 #include <string.h>
+#include <vector>
+#include <opencv2/opencv.hpp>
 #include <tee_client_api.h>
 #include "face_recognition_ta.h"
-#include <opencv2/opencv.hpp>
 
 using namespace cv;
+
+// Function to read an image from a buffer
+Mat read_image_from_buffer(const std::vector<uchar>& buffer) {
+    Mat img = imdecode(buffer, IMREAD_GRAYSCALE);
+    if (img.empty()) {
+        printf("Failed to load face image from buffer\n");
+    }
+    return img;
+}
 
 void store_face(TEEC_Context *ctx, TEEC_Session *sess, const Mat &face_image) {
     TEEC_Operation op;
@@ -77,16 +87,18 @@ int main() {
         return 1;
     }
 
+    // Example: Load face image from file and store it
     Mat face_image = imread("face_to_store.jpg", IMREAD_GRAYSCALE);
     if (face_image.empty()) {
-        printf("Failed to load face image\n");
+        printf("Failed to load face image from file\n");
         return 1;
     }
     store_face(&ctx, &sess, face_image);
 
+    // Example: Load face image from file and recognize it
     Mat new_face_image = imread("face_to_recognize.jpg", IMREAD_GRAYSCALE);
     if (new_face_image.empty()) {
-        printf("Failed to load new face image\n");
+        printf("Failed to load new face image from file\n");
         return 1;
     }
     int match = recognize_face(&ctx, &sess, new_face_image);
@@ -96,6 +108,7 @@ int main() {
         printf("Face not recognized\n");
     }
 
+    // Example: Delete the last stored face
     delete_last_face(&ctx, &sess);
 
     TEEC_CloseSession(&sess);
